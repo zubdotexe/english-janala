@@ -1,3 +1,51 @@
+const createSynonym = (synonyms) => {
+    const styledSyns = synonyms.map(syn => `<span class="btn">${syn}</span>`);
+    return styledSyns.join(" ");
+}
+
+const displayWordDetails = (details) => {
+    
+    const modal = document.getElementById("my_modal_5");
+    modal.innerHTML = `
+        <div class="modal-box">
+            <div class="border-2 border-gray-100 p-3 rounded-lg break-words">
+                <div class="flex flex-wrap items-center gap-3 mb-4">
+                    <h2 class="text-3xl font-bold">${details.word}</h2>
+                    <h2 class="text-3xl font-bold">
+                        (<span><i class="fa-solid fa-microphone-lines"></i></span>${details.pronunciation})
+                    </h2>
+                </div>
+                <h2 class="font-bold mb-1">Meaning</h2>
+                <p class="mb-4">${details.meaning ? details.meaning : "---"}</p>
+                
+                <h2 class="font-bold mb-1">Example</h2>
+                <p class="mb-4">${details.sentence ? details.sentence : "---"}</p>
+
+                <h2 class="font-semibold text-gray-600 mb-1">সমার্থক শব্দ গুলো</h2>
+                <div class="flex flex-row flex-wrap gap-2">
+                    ${createSynonym(details.synonyms)}
+                </div>
+            </div>
+            
+            <div class="modal-action justify-start">
+            <form method="dialog">
+                <!-- if there is a button in form, it will close the modal -->
+                <button class="btn btn-primary">Complete Learning</button>
+            </form>
+            </div>
+        </div>
+    `
+
+    modal.showModal();
+}
+
+const loadWordDetails = async (id) => {
+    const url = `https://openapi.programming-hero.com/api/word/${id}`;    
+    const res = await fetch(url);
+    const details = await res.json();
+    displayWordDetails(details.data);
+}
+
 const displayLevelWord = (words) => {
 
     const wordContainer = document.getElementById("word-container");
@@ -17,6 +65,7 @@ const displayLevelWord = (words) => {
 
     words.forEach(word => {
         const card = document.createElement("div");
+        // console.log('word', word);
         
         card.innerHTML = `
             <div class="bg-white rounded-md p-10 space-y-5 text-center whitespace-normal break-words h-full">
@@ -24,7 +73,7 @@ const displayLevelWord = (words) => {
                 <p class="font-bold">Meaning/Pronunciation</p>
                 <p class="font-bangla font-semibold text-2xl text-gray-600">"${word.meaning ? word.meaning : "---"}/${word.pronunciation ? word.pronunciation : "---"}"</p>
                 <div class="flex flex-col gap-2 sm:flex-row justify-between items-center">
-                    <button class="btn bg-[#1A91FF10] hover:bg-[#1A91FF60]"><i class="fa-solid fa-circle-info"></i></button>
+                    <button onclick="loadWordDetails(${word.id})" class="btn bg-[#1A91FF10] hover:bg-[#1A91FF60]"><i class="fa-solid fa-circle-info"></i></button>
                     <button class="btn bg-[#1A91FF10] hover:bg-[#1A91FF60]"><i class="fa-solid fa-volume-high"></i></button>
                 </div>
             </div>
