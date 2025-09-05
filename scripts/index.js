@@ -41,6 +41,11 @@ const displayWordDetails = (details) => {
 
 const loadWordDetails = async (id) => {
     const modal = document.getElementById("my_modal_5");
+    modal.innerHTML = `
+        <div class="modal-box flex justify-center items-center h-2/4">
+            <span class="loading loading-ring loading-xl"></span>
+        </div>
+    `
     modal.showModal();
     // manageSpinner(true);
     const url = `https://openapi.programming-hero.com/api/word/${id}`;    
