@@ -148,3 +148,34 @@ const loadLessons = () => {
 }
 
 loadLessons();
+
+document.querySelector("#btn-search-words").addEventListener("click", () => {
+    const query = document.querySelector("#input-search-words");
+    const searchInput = query.value.trim().toLowerCase();
+    console.log('', searchInput);
+    
+    const url = "https://openapi.programming-hero.com/api/words/all";
+    fetch(url)
+    .then(res => res.json())
+    .then(obj => {
+        const words = obj.data;
+        const filteredWords = words.filter(wordDetails => wordDetails.word.toLowerCase().includes(searchInput));
+        console.log('', filteredWords.length);
+        
+        const wordContainer = document.getElementById("word-container");
+        wordContainer.innerHTML = "";
+
+        if(searchInput === "" || filteredWords.length === 0) {
+            wordContainer.innerHTML = `
+                <div class="col-span-3 text-center p-10 space-y-4">
+                    <img class="mx-auto" src="./assets/alert-error.png" alt="Alert error image">
+                    <p class="font-bangla">এই Vocabulary এখনো যুক্ত করা হয়নি।</p>
+                    <h2 class="font-bangla text-4xl font-semibold break-words">অন্য vocabulary search করুন</h2>
+                </div>
+            `
+            return;
+        }
+        
+        displayLevelWord(filteredWords);
+    })
+});
