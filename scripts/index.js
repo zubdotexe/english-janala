@@ -36,10 +36,13 @@ const displayWordDetails = (details) => {
         </div>
     `
 
-    modal.showModal();
+    // modal.showModal();
 }
 
 const loadWordDetails = async (id) => {
+    const modal = document.getElementById("my_modal_5");
+    modal.showModal();
+    // manageSpinner(true);
     const url = `https://openapi.programming-hero.com/api/word/${id}`;    
     const res = await fetch(url);
     const details = await res.json();
