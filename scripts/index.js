@@ -54,6 +54,12 @@ const loadWordDetails = async (id) => {
     displayWordDetails(details.data);
 }
 
+function pronounceWord(word) {
+  const utterance = new SpeechSynthesisUtterance(word);
+  utterance.lang = "en-EN"; // English
+  window.speechSynthesis.speak(utterance);
+}
+
 const displayLevelWord = (words) => {
 
     const wordContainer = document.getElementById("word-container");
@@ -82,7 +88,7 @@ const displayLevelWord = (words) => {
                 <p class="font-bangla font-semibold text-2xl text-gray-600">"${word.meaning ? word.meaning : "---"}/${word.pronunciation ? word.pronunciation : "---"}"</p>
                 <div class="flex flex-col gap-2 sm:flex-row justify-between items-center">
                     <button onclick="loadWordDetails(${word.id})" class="btn bg-[#1A91FF10] hover:bg-[#1A91FF60]"><i class="fa-solid fa-circle-info"></i></button>
-                    <button class="btn bg-[#1A91FF10] hover:bg-[#1A91FF60]"><i class="fa-solid fa-volume-high"></i></button>
+                    <button onclick="pronounceWord('${word.word}')" class="btn bg-[#1A91FF10] hover:bg-[#1A91FF60]"><i class="fa-solid fa-volume-high"></i></button>
                 </div>
             </div>
         `
@@ -155,6 +161,7 @@ const loadLessons = () => {
 loadLessons();
 
 document.querySelector("#btn-search-words").addEventListener("click", () => {
+    removeActive();
     const query = document.querySelector("#input-search-words");
     const searchInput = query.value.trim().toLowerCase();
     
@@ -166,7 +173,6 @@ document.querySelector("#btn-search-words").addEventListener("click", () => {
     .then(obj => {
         const words = obj.data;
         const filteredWords = words.filter(wordDetails => wordDetails.word.toLowerCase().includes(searchInput));
-        console.log('', filteredWords.length);
         
         const wordContainer = document.getElementById("word-container");
         wordContainer.innerHTML = "";
