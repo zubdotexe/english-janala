@@ -157,7 +157,8 @@ loadLessons();
 document.querySelector("#btn-search-words").addEventListener("click", () => {
     const query = document.querySelector("#input-search-words");
     const searchInput = query.value.trim().toLowerCase();
-    console.log('', searchInput);
+    
+    manageSpinner(true);
     
     const url = "https://openapi.programming-hero.com/api/words/all";
     fetch(url)
@@ -178,6 +179,7 @@ document.querySelector("#btn-search-words").addEventListener("click", () => {
                     <h2 class="font-bangla text-4xl font-semibold break-words">অন্য vocabulary search করুন</h2>
                 </div>
             `
+            manageSpinner(false);
             return;
         }
         
