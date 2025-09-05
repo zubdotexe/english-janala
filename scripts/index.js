@@ -60,6 +60,44 @@ function pronounceWord(word) {
   window.speechSynthesis.speak(utterance);
 }
 
+const heartify = (elem) => {
+    // console.log('cl', elem);
+    const favwordContainer = document.getElementById("favword-container");
+    const card = document.createElement("div");
+    const wordId = elem.parentElement.parentElement.id.split("-").pop();
+    const word = elem.parentElement.querySelector("h2").innerText;
+    
+    if(elem.classList.contains("fa-regular")) {
+        elem.classList.replace("fa-regular", "fa-solid");
+        // console.log('word id', wordId);
+        
+        
+        card.innerHTML = `
+            <span id="fav-card-${wordId}" class="btn">${word}</span>
+        `
+        
+        favwordContainer.classList.replace("hidden", "block");
+        favwordContainer.querySelector("div").append(card);
+        // console.log('', );
+        
+    }
+    else if(elem.classList.contains("fa-solid")) {
+        elem.classList.replace("fa-solid", "fa-regular");
+        // console.log('fav container', favwordContainer);
+        const favCards = favwordContainer.querySelector("div").querySelectorAll("div");
+        // console.log('', favCards);
+        
+        favCards.forEach(ele => {
+            console.log('iddd', ele);
+            
+            if(ele.firstElementChild.id.split("-").pop() === wordId) {
+                // console.log('ele', ele);
+                favwordContainer.querySelector("div").removeChild(ele)
+            }
+        })
+    }
+};
+
 const displayLevelWord = (words) => {
 
     const wordContainer = document.getElementById("word-container");
@@ -82,8 +120,11 @@ const displayLevelWord = (words) => {
         // console.log('word', word);
         
         card.innerHTML = `
-            <div class="bg-white rounded-md p-10 space-y-5 text-center whitespace-normal break-words h-full">
-                <h2 class="font-bold text-2xl">${word.word}</h2>
+            <div id="card-id-${word.id}" class="bg-white rounded-md p-10 space-y-5 text-center whitespace-normal break-words h-full">
+                <div class="relative flex flex-col sm:flex-row items-center justify-center">
+                    <h2 class="font-bold text-2xl">${word.word}</h2>
+                    <i class="btn-heart static sm:absolute right-0 cursor-pointer fa-regular fa-heart"></i>
+                </div>
                 <p class="font-bold">Meaning/Pronunciation</p>
                 <p class="font-bangla font-semibold text-2xl text-gray-600">"${word.meaning ? word.meaning : "---"}/${word.pronunciation ? word.pronunciation : "---"}"</p>
                 <div class="flex flex-col gap-2 sm:flex-row justify-between items-center">
@@ -192,3 +233,12 @@ document.querySelector("#btn-search-words").addEventListener("click", () => {
         displayLevelWord(filteredWords);
     })
 });
+
+document.getElementById("word-container").addEventListener("click", (e) => {
+    
+    if(e.target.closest("i")) {
+        // console.log('clicked', e.target.parentElement.querySelector("h2"));
+        
+        heartify(e.target);
+    }
+})
