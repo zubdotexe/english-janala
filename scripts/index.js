@@ -260,7 +260,7 @@ document.querySelector("#btn-search-words").addEventListener("click", () => {
 });
 
 document.getElementById("word-container").addEventListener("click", (e) => {
-    if(e.target.closest("i")) {
+    if(e.target.closest("i").classList.contains("btn-heart")) {
         heartify(e.target);
     }
 })
