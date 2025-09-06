@@ -54,10 +54,19 @@ const loadWordDetails = async (id) => {
     displayWordDetails(details.data);
 }
 
-function pronounceWord(word) {
-  const utterance = new SpeechSynthesisUtterance(word);
-  utterance.lang = "en-EN"; // English
-  window.speechSynthesis.speak(utterance);
+function pronounceWord(event, word) {
+    // console.log('', event.target.closest("button"));
+    const btnVol = event.target.closest("button");
+    btnVol.style.backgroundColor = "#1A91FF60";
+
+    const utterance = new SpeechSynthesisUtterance(word);
+    utterance.lang = "en-EN"; // English
+
+    utterance.onend = () => {
+        btnVol.style.backgroundColor = "#1A91FF10";
+    }
+    
+    window.speechSynthesis.speak(utterance);
 }
 
 function getId(elem) {
@@ -139,7 +148,7 @@ const displayLevelWord = (words) => {
                 <p class="font-bangla font-semibold text-2xl text-gray-600">"${word.meaning ? word.meaning : "---"}/${word.pronunciation ? word.pronunciation : "---"}"</p>
                 <div class="flex flex-col gap-2 sm:flex-row justify-between items-center">
                     <button onclick="loadWordDetails(${word.id})" class="btn bg-[#1A91FF10] hover:bg-[#1A91FF60]"><i class="fa-solid fa-circle-info"></i></button>
-                    <button onclick="pronounceWord('${word.word}')" class="btn bg-[#1A91FF10] hover:bg-[#1A91FF60]"><i class="fa-solid fa-volume-high"></i></button>
+                    <button onclick="pronounceWord(event, '${word.word}')" class="btn bg-[#1A91FF10] hover:bg-[#1A91FF60]"><i class="fa-solid fa-volume-high"></i></button>
                 </div>
             </div>
         `
@@ -260,7 +269,9 @@ document.querySelector("#btn-search-words").addEventListener("click", () => {
 });
 
 document.getElementById("word-container").addEventListener("click", (e) => {
-    if(e.target.closest("i").classList.contains("btn-heart")) {
+    const heartIcon = e.target.closest("i.btn-heart");
+
+    if(heartIcon) {
         heartify(e.target);
     }
 })
