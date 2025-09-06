@@ -60,41 +60,51 @@ function pronounceWord(word) {
   window.speechSynthesis.speak(utterance);
 }
 
+function getId(elem) {
+    return elem.id.split("-").pop();
+}
+
 const heartify = (elem) => {
     // console.log('cl', elem);
-    const favwordContainer = document.getElementById("favword-container");
+    const favwordsContainer = document.getElementById("favwords-container");
     const card = document.createElement("div");
-    const wordId = elem.parentElement.parentElement.id.split("-").pop();
+    const wordId = getId(elem.parentElement.parentElement);
     const word = elem.parentElement.querySelector("h2").innerText;
+    const favCards = favwordsContainer.querySelector("div").children;
     
     if(elem.classList.contains("fa-regular")) {
         elem.classList.replace("fa-regular", "fa-solid");
         // console.log('word id', wordId);
+        const favWordsIds = Array.from(favCards).map(div => {
+            return getId(div.querySelector("span"));
+        })
         
-        
+        if(favWordsIds.includes(wordId)) return;
+
         card.innerHTML = `
             <span id="fav-card-${wordId}" class="btn">${word}</span>
         `
         
-        favwordContainer.classList.replace("hidden", "block");
-        favwordContainer.querySelector("div").append(card);
+        favwordsContainer.querySelector("p").classList.add("hidden");
+        favwordsContainer.querySelector("div").append(card);
         // console.log('', );
         
     }
     else if(elem.classList.contains("fa-solid")) {
-        elem.classList.replace("fa-solid", "fa-regular");
-        // console.log('fav container', favwordContainer);
-        const favCards = favwordContainer.querySelector("div").querySelectorAll("div");
-        // console.log('', favCards);
+        elem.classList.replace("fa-solid", "fa-regular"); 
         
-        favCards.forEach(ele => {
-            console.log('iddd', ele);
+        Array.from(favCards).forEach(ele => {
+            // console.log('iddd', ele);
             
-            if(ele.firstElementChild.id.split("-").pop() === wordId) {
+            if(getId(ele.firstElementChild) === wordId) {
                 // console.log('ele', ele);
-                favwordContainer.querySelector("div").removeChild(ele)
+                favwordsContainer.querySelector("div").removeChild(ele)
             }
         })
+
+        if(favCards.length === 0) {
+            favwordsContainer.querySelector("p").classList.remove("hidden");
+        }
     }
 };
 
@@ -136,6 +146,21 @@ const displayLevelWord = (words) => {
 
         wordContainer.append(card);
     });
+
+    const favCards = document.getElementById("favwords-container").querySelector("div").children;
+    const favCardsIds = Array.from(favCards).map(div => {
+        return getId(div.querySelector("span"));
+    })
+    
+    words.forEach(word => {
+
+        if(favCardsIds.includes(word.id.toString())) {
+            const card = wordContainer.querySelector(`#card-id-${word.id}`);
+            card.querySelector(".btn-heart").click();
+        }
+    })
+    
+    
 
     manageSpinner(false);
 }
@@ -235,10 +260,7 @@ document.querySelector("#btn-search-words").addEventListener("click", () => {
 });
 
 document.getElementById("word-container").addEventListener("click", (e) => {
-    
     if(e.target.closest("i")) {
-        // console.log('clicked', e.target.parentElement.querySelector("h2"));
-        
         heartify(e.target);
     }
 })
